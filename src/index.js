@@ -34,6 +34,7 @@ app.put('/pessoas/:id', (req, res) => {
     res.send("Pessoa alterada com sucesso!")
 });
 
+// //delete e retorne um novo array
 // app.delete('/pessoas/:id', (req, res) => {
 //     const filtrar = pessoas.filter(pessoa => pessoa.id !== parseInt(req.params.id))
 //     res.send(filtrar)
