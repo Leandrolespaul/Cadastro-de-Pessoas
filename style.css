@@ -1,0 +1,91 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+header {
+  background-color: #525252;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.titulo_header {
+  display: flex;
+  justify-content: center;
+  color: white;
+  color: white;
+  text-shadow: black 0.1em 0.1em 0.2em;
+}
+.subtitulo_header {
+  display: flex;
+  justify-content: center;
+  color: white;
+  color: white;
+  text-shadow: black 0.1em 0.1em 0.2em;
+}
+
+body {
+  background-color: #fed7aa;
+}
+
+form {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  grid-area: auto;
+  padding: 50px;
+  color: #ffffff;
+  text-shadow: rgb(22, 20, 20) 0.1em 0.1em 0.2em;
+  background-image: url("https://idealepapeis.com.br/wp-content/uploads/2021/05/PDL2076.jpg");
+}
+
+.btn {
+  margin-top: 50px;
+  width: 70px;
+  height: 30px;
+  padding: 5px 10px;
+  font-size: 14px;
+  border: none;
+  border-radius: 8px;
+  background-color: #000000;
+  cursor: pointer;
+  font-family: Georgia, "Times New Roman", Times, serif;
+  color: white;
+}
+
+input {
+  background-color: #f0f6ff;
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 9px 8px rgba(0, 0, 0, 0.2);
+  width: 250px;
+  height: 30px;
+  cursor: pointer;
+  color: #78716c;
+  
+  
+}
+
+.input-nome {
+  text-transform: capitalize
+}
+
+#dados {
+  white-space: pre-line;
+}
+
+.erro {
+  color: rgb(230, 0, 0); 
+  text-shadow: rgb(255, 255, 255) 0.1em 0.1em 0.2em;
+  font-size: large;
+  text-transform: uppercase;
+  font-weight: bold;
+  padding: 20px;
+  
+}

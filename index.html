@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <title>Cadastro de Pessoas</title>
+  </head>
+
+  <header>
+    <h1 class="titulo_header">CADASTRO DE PESSOAS</h1>
+    <p></p>
+    <h2 class="subtitulo_header">Insira seus dados abaixo:</h2>
+  </header>
+  <body>
+    <form>
+      <label for="nome">Nome:</label>
+      <input
+        id="nome"
+        class="input-nome"
+        type="text"
+        placeholder="Digite seu nome"
+      />
+      <label for="date">Data Nascimento:</label>
+      <input id="data" class="input" type="date" />
+      <label for="telefone">Telefone:</label>
+      <input
+        name="telefone"
+        id="telefone"
+        class="input-telefone"
+        type="text"
+        placeholder="ex. (99)99999-9999"
+      />
+      <p class="erro" id="mensagem-erro"></p>
+    </form>
+    <div>
+      <h2>Pessoas Cadastradas:</h2>
+    </div>
+    <div id="dados"></div>
+    <button class="btn" type="submit" onclick="btn()">Enviar</button>
+  </body>
+  <script>
+    const celular = document.getElementById("telefone");
+
+    celular.addEventListener("input", () => {
+      let limparValor = celular.value.replace(/\D/g, "").substring(0, 11);
+      let numeroArray = limparValor.split("");
+      let numeroFormatado = "";
+
+      if (numeroArray.length > 0) {
+        numeroFormatado += `(${numeroArray.slice(0, 2).join("")})`;
+      }
+      if (numeroArray.length > 2) {
+        numeroFormatado += ` ${numeroArray.slice(2, 7).join("")}`;
+      }
+      if (numeroArray.length > 7) {
+        numeroFormatado += `-${numeroArray.slice(7, 11).join("")}`;
+      }
+      celular.value = numeroFormatado;
+    });
+
+    const inputNome = document.querySelector("#nome");
+    inputNome.addEventListener("keypress", (e) => {
+      const keyCode = e.keyCode ? e.keyCode : e.wich;
+      if (keyCode > 47 && keyCode < 58) {
+        e.preventDefault();
+      }
+    });
+
+    const btn = () => {
+      const mensagemErro = document.getElementById("mensagem-erro");
+
+      const nome = document.getElementById("nome").value;
+      const dataNascimento = document.getElementById("data").value;
+      const telefone = document.getElementById("telefone").value;
+
+      if (!nome) {
+        mensagemErro.textContent = "Por favor, preencha seu nome.";
+        return false;
+      }
+      if (!dataNascimento) {
+        mensagemErro.textContent =
+          "Por favor, preencha sua data de nascimento.";
+        return false;
+      }
+      if (!telefone) {
+        mensagemErro.textContent = "Por favor, preencha seu telefone.";
+        return false;
+      }
+
+      axios
+        .post("http://localhost:3002/pessoas", {
+          nome: nome,
+          dataNascimento: dataNascimento,
+          telefone: telefone,
+        })
+        .then((response) => {
+          document.getElementById("nome").value = "";
+          document.getElementById("data").value = "";
+          document.getElementById("telefone").value = "";
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+      location.reload();
+    };
+    const carregarPessoas = () => {
+      axios.get("http://localhost:3002/pessoas").then((response) => {
+        const primeiraLetraMaiuscula = (nome) => {
+          return nome.toLowerCase().replace(/\b\w/g, function (palavra) {
+            return palavra.toUpperCase();
+          });
+        };
+        let adicionar = "";
+        response.data.forEach((dado) => {
+          adicionar += `
+              <div>
+                Nome: ${primeiraLetraMaiuscula(
+                  dado.nome
+                )} <br> Data de Nascimento: ${
+            dado.dataNascimento
+          } <br> Telefone ${dado.telefone}  
+                <button onclick="btnAtualizar(${
+                  dado.id
+                })">Atualizar</button> <button onclick="btnDeletar(${
+            dado.id
+          })">Deletar</button>
+              </div>`;
+        });
+
+        document.getElementById("dados").innerHTML = adicionar;
+      });
+    };
+
+    const btnAtualizar = (id) => {
+      const mensagemErro = document.getElementById("mensagem-erro");
+
+      const nome = document.getElementById("nome").value;
+      const dataNascimento = document.getElementById("data").value;
+      const telefone = document.getElementById("telefone").value;
+
+      if (!nome) {
+        mensagemErro.textContent = "Por favor, preencha seu nome.";
+        return false;
+      }
+
+      if (!dataNascimento) {
+        mensagemErro.textContent =
+          "Por favor, preencha sua data de nascimento.";
+        return false;
+      }
+      if (!telefone) {
+        mensagemErro.textContent = "Por favor, preencha seu telefone.";
+        return false;
+      }
+      axios
+        .put(`http://localhost:3002/pessoas/${id}`, {
+          nome: nome,
+          dataNascimento: dataNascimento,
+          telefone: telefone,
+        })
+        .then((response) => {
+          document.getElementById("nome").value = "";
+          document.getElementById("data").value = "";
+          document.getElementById("telefone").value = "";
+          carregarPessoas();
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    };
+
+    // const btnDeletar = (id) => {
+    //   axios.delete(`http://localhost:3002/pessoas/${id}`,)
+    //   .then((response) => {
+    //     const encontrarPessoa = response.data.filter(pessoa => pessoa.id !== id)
+    //     console.log(encontrarPessoa)
+    //   })
+    // }
+
+    // const btnDeletar = (id) => {
+    //   axios.delete(`http://localhost:3002/pessoas/${id}`).then((response) => {
+    //     const index = response.data.find(pessoa => console.log(pessoa.id))
+    //     console.log(index)
+    //     console.log(response.data)
+
+    //     if (index === -1) {
+    //       console.log('Pessoa não encontrada')
+    //     }
+    //     // response.data.splice(index, 1)
+    //     // carregarPessoas()
+
+    //   });
+    // };
+
+
+ 
+
+
+    const btnDeletar = (id) => {
+      
+      axios
+        .delete(`http://localhost:3002/pessoas/${id}`)
+        
+        .then((response) => {
+          
+        carregarPessoas()
+   
+
+
+
+        //   const index = response.data.findIndex(pessoa => pessoa.id === id)
+        //   console.log(index)
+        //   if (index !== -1) {
+        //     response.data.splice(index, 1)
+        //   } else {
+        //     console.log("Pessoa não encontrada")
+        //   }
+        //   console.log(response.data)
+        //   carregarPessoas()
+          
+        // })
+        // .catch((error) => {
+        //   console.log(error);
+        });
+        
+    };
+
+    carregarPessoas();
+  </script>
+</html>
